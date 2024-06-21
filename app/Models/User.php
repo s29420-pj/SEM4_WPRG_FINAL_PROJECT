@@ -2,14 +2,18 @@
 
 namespace App\Models;
 
+use Exception;
+
 class User
 {
-    public function createUser($username, $password, $role): void
+    public function createUser($username, $password): void
     {
+        $defaultRole = 'USER';
+
         $db = new Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $password, $role);
+        $stmt->bind_param("sss", $username, $password, $defaultRole);
         $stmt->execute();
         $stmt->close();
     }
@@ -38,18 +42,28 @@ class User
         return $result->fetch_assoc()['role'];
     }
 
-    public function updateUser($userID, $username, $password, $role): void
+    public function updateUserRole($userID, $role): void
     {
+        $user = new User();
+        if (!$user->isLoggedIn() && $user->getUserRole($userID) === 'ADMIN') {
+            throw new Exception('You must be logged in to update a user role, and you have to be an admin to update an user');
+        }
+
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("UPDATE users SET username = ?, password = ?, role = ? WHERE id = ?");
-        $stmt->bind_param("sssi", $username, $password, $role, $userID);
+        $stmt = $connection->prepare("UPDATE users SET role = ? WHERE id = ?");
+        $stmt->bind_param("si", $role, $userID);
         $stmt->execute();
         $stmt->close();
     }
 
     public function deleteUser($userID): void
     {
+        $user = new User();
+        if (!$user->isLoggedIn() && $user->getUserRole($userID) === 'ADMIN') {
+            throw new Exception('You must be logged in to delete a user, and you have to be an admin to delete an user');
+        }
+
         $db = new Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("DELETE FROM users WHERE id = ?");
@@ -71,6 +85,11 @@ class User
 
     public function resetPassword($userID, $password): void
     {
+        $user = new User();
+        if (!$user->isLoggedIn()) {
+            throw new Exception('You must be logged in to reset your password');
+        }
+
         $db = new Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("UPDATE users SET password = ? WHERE id = ?");
@@ -91,8 +110,20 @@ class User
         return $result->fetch_assoc();
     }
 
+    public function isLoggedIn(): bool
+    {
+        session_start();
+        return isset($_SESSION['user_id']);
+    }
+
     public function logout(): void
     {
+        $user = new User();
+        if (!$user->isLoggedIn()) {
+            header('Location: /index.php');
+            exit();
+        }
+
         session_start();
         session_destroy();
     }
