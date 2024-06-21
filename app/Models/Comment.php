@@ -2,10 +2,21 @@
 
 namespace App\Models;
 
+use Exception;
+
 class Comment
 {
     public function createComment($content, $postID, $userID, $date): void
     {
+        $user = new User();
+
+        if (empty($content)) {
+            throw new Exception('Comment content cannot be empty');
+        }
+        if (!$user->isLoggedIn()) {
+            $userID = null;
+        }
+
         $db = new Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("INSERT INTO comments (content, post_id, user_id, date) VALUES (?, ?, ?, ?)");
@@ -16,6 +27,11 @@ class Comment
 
     public function deleteComment($commentID): void
     {
+        $user = new User();
+        if (!$user->isLoggedIn() && $user->getUserRole($user->getUserID()) === 'ADMIN') {
+            throw new Exception('You must be logged in to delete a comment and you have to be an admin to delete a comment');
+        }
+
         $db = new Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("DELETE FROM comments WHERE id = ?");
