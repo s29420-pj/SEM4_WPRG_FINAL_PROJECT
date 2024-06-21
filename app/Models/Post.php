@@ -2,10 +2,17 @@
 
 namespace App\Models;
 
+use Exception;
+
 class Post
 {
     public function createPost($title, $content, $image, $userID, $date): void
     {
+        $user = new User();
+        if (!$user->isLoggedIn() && ($user->getUserRole($userID) === 'ADMIN' || $user->getUserRole($userID) === 'AUTHOR')) {
+            throw new Exception('You must be logged in to create a post and you have to be an admin or an author to create a post');
+        }
+
         $db = new Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("INSERT INTO posts (title, content, image, user_id, date) VALUES (?, ?, ?, ?, ?)");
@@ -16,6 +23,11 @@ class Post
 
     public function editPost($postID, $title, $content, $image): void
     {
+        $user = new User();
+        if (!$user->isLoggedIn() && ($user->getUserRole($user->getUserID()) === 'ADMIN' || $user->getUserRole($user->getUserID()) === 'AUTHOR')) {
+            throw new Exception('You must be logged in to edit a post and you have to be an admin or an author to edit a post');
+        }
+
         $db = new Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("UPDATE posts SET title = ?, content = ?, image = ? WHERE id = ?");
@@ -26,6 +38,11 @@ class Post
 
     public function deletePost($postID): void
     {
+        $user = new User();
+        if (!$user->isLoggedIn() && $user->getUserRole($user->getUserID()) === 'ADMIN') {
+            throw new Exception('You must be logged in to delete a post and you have to be an admin to delete a post');
+        }
+
         $db = new Database();
         $connection = $db->getConnection();
         $stmt = $connection->prepare("DELETE FROM posts WHERE id = ?");
