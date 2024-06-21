@@ -30,6 +30,17 @@ class User
         return $result->fetch_assoc();
     }
 
+    public function getUserID()
+    {
+        $user = new User();
+        if (!$user->isLoggedIn()) {
+            throw new Exception('You must be logged in to get your user ID');
+        }
+
+        session_start();
+        return $_SESSION['user_id'];
+    }
+
     public function getUserRole($userID)
     {
         $db = new Database();
