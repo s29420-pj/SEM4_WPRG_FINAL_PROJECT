@@ -16,9 +16,9 @@ class CommentController
         $this->logger = new Log();
     }
 
-    public function createComment($content, $postID, $userID, $date)
+    public function createComment($content, $postID, $userID)
     {
-        $this->commentModel->createComment($content, $postID, $userID, $date);
+        $this->commentModel->createComment($content, $postID, $userID, time());
         $this->logger->createLog('Comment created', time());
     }
 
