@@ -14,7 +14,7 @@ class User
         $stmt->close();
     }
 
-    public function getUser($userID)
+    public function getUser($userID): bool|array|null
     {
         $db = new Database();
         $connection = $db->getConnection();
@@ -58,7 +58,7 @@ class User
         $stmt->close();
     }
 
-    public function getUsers()
+    public function getUsers(): array
     {
         $db = new Database();
         $connection = $db->getConnection();
@@ -77,5 +77,23 @@ class User
         $stmt->bind_param("si", $password, $userID);
         $stmt->execute();
         $stmt->close();
+    }
+
+    public function login($username, $password): bool|array|null
+    {
+        $db = new Database();
+        $connection = $db->getConnection();
+        $stmt = $connection->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+        $stmt->bind_param("ss", $username, $password);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result->fetch_assoc();
+    }
+
+    public function logout(): void
+    {
+        session_start();
+        session_destroy();
     }
 }
