@@ -4,12 +4,15 @@ namespace App\Models;
 
 class Log
 {
-    public function createLog($userID, $action, $date): void
+    public function createLog($message, $timestamp): void
     {
+        $user = new User();
+        $userID = $user->getUserID();
+
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("INSERT INTO logs (user_id, action, date) VALUES (?, ?, ?)");
-        $stmt->bind_param("iss", $userID, $action, $date);
+        $stmt = $connection->prepare("INSERT INTO logs (action, user_id, timestamp) VALUES (?, ?, ?)");
+        $stmt->bind_param("si", $message, $userID, $timestamp);
         $stmt->execute();
         $stmt->close();
     }
