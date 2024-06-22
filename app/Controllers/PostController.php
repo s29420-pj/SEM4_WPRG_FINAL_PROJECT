@@ -18,20 +18,20 @@ class PostController
 
     public function createPost($title, $content, $image, $userID): void
     {
-        $this->postModel->createPost($title, $content, $image, $userID, time());
-        $this->logger->createLog('Post created', time());
+        $this->postModel->createPost($title, $content, $image, $userID, date('Y-m-d H:i:s'));
+        $this->logger->createLog('Post created', date('Y-m-d H:i:s'));
     }
 
     public function editPost($postID, $title, $content, $image): void
     {
         $this->postModel->editPost($postID, $title, $content, $image);
-        $this->logger->createLog('Post edited', time());
+        $this->logger->createLog('Post edited', date('Y-m-d H:i:s'));
     }
 
     public function deletePost($postID): void
     {
         $this->postModel->deletePost($postID);
-        $this->logger->createLog('Post deleted', time());
+        $this->logger->createLog('Post deleted', date('Y-m-d H:i:s'));
     }
 
     public function getPostByID($postID): bool|array|null

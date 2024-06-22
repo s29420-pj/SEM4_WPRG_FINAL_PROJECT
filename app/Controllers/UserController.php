@@ -19,7 +19,7 @@ class UserController
     public function createUser($username, $password)
     {
         $this->userModel->createUser($username, $password);
-        $this->logger->createLog('User created', time());
+        $this->logger->createLog('User created', date('Y-m-d H:i:s'));
     }
 
     public function getUser($userID)
@@ -39,13 +39,13 @@ class UserController
     public function updateUserRole($userID, $role)
     {
         $this->userModel->updateUserRole($userID, $role);
-        $this->logger->createLog('User role updated', time());
+        $this->logger->createLog('User role updated', date('Y-m-d H:i:s'));
     }
 
     public function deleteUser()
     {
         $this->userModel->deleteUser();
-        $this->logger->createLog('User deleted', time());
+        $this->logger->createLog('User deleted', date('Y-m-d H:i:s'));
     }
 
     public function getUsers()
@@ -56,13 +56,14 @@ class UserController
     public function resetPassword($userID, $password)
     {
         $this->userModel->resetPassword($userID, $password);
-        $this->logger->createLog('Password reset', time());
+        $this->logger->createLog('Password reset', date('Y-m-d H:i:s'));
     }
 
-    public function login($username, $password)
+    public function login($username, $password): bool
     {
-        $this->userModel->login($username, $password);
-        $this->logger->createLog('User logged in', time());
+        $this->logger->createLog('User logged in', date('Y-m-d H:i:s'));
+        return $this->userModel->login($username, $password);
+
     }
 
     public function isLoggedIn()
@@ -73,7 +74,7 @@ class UserController
     public function logout()
     {
         $this->userModel->logout();
-        $this->logger->createLog('User logged out', time());
+        $this->logger->createLog('User logged out', date('Y-m-d H:i:s'));
     }
 
 }
