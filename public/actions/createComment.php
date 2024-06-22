@@ -3,7 +3,7 @@
 use App\Controllers\CommentController;
 use App\Controllers\UserController;
 
-require_once '../vendor/autoload.php';
+require_once '../../vendor/autoload.php';
 
 session_start();
 
@@ -23,7 +23,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $commentController = new CommentController();
     $commentController->createComment($content, $postId, $userId);
 
-    header("Location: post.php?id=$postId");
+    header("Location: ../post.php?id=$postId");
 } else {
-    header("Location: index.php");
+    header("Location: ../index.php");
 }
