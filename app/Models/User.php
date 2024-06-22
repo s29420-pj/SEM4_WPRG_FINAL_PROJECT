@@ -32,13 +32,10 @@ class User
 
     public function getUserID()
     {
-        $user = new User();
-        if (!$user->isLoggedIn()) {
-            throw new Exception('You must be logged in to get your user ID');
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
         }
-
-        session_start();
-        return $_SESSION['id'];
+        return $_SESSION['id'] ?? null;
     }
 
     public function getUserRole($userID)
@@ -118,24 +115,31 @@ class User
         $stmt->execute();
         $result = $stmt->get_result();
         $stmt->close();
-        return $result->fetch_assoc();
+        $user = $result->fetch_assoc();
+
+        if ($user) {
+            if (session_status() == PHP_SESSION_NONE) {
+                session_start();
+            }
+            $_SESSION['id'] = $user['id'];
+            return true;
+        } else {
+            return false;
+        }
     }
 
     public function isLoggedIn(): bool
     {
-        session_start();
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
         return isset($_SESSION['id']);
     }
 
     public function logout(): void
     {
-        $user = new User();
-        if (!$user->isLoggedIn()) {
-            header('Location: /index.php');
-            exit();
-        }
-
         session_start();
+        session_unset();
         session_destroy();
     }
 }
