@@ -18,14 +18,14 @@ class CommentController
 
     public function createComment($content, $postID, $userID)
     {
-        $this->commentModel->createComment($content, $postID, $userID, time());
-        $this->logger->createLog('Comment created', time());
+        $this->commentModel->createComment($content, $postID, $userID, date('Y-m-d H:i:s'));
+        $this->logger->createLog('Comment created', date('Y-m-d H:i:s'));
     }
 
     public function deleteComment($commentID)
     {
         $this->commentModel->deleteComment($commentID);
-        $this->logger->createLog('Comment deleted', time());
+        $this->logger->createLog('Comment deleted', date('Y-m-d H:i:s'));
     }
 
     public function getCommentsByPostID($postID)
