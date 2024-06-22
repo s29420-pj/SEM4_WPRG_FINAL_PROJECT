@@ -32,4 +32,9 @@ class CommentController
     {
         return $this->commentModel->getCommentsByPostID($postID);
     }
+
+    public function getComments(): array
+    {
+        return $this->commentModel->getComments();
+    }
 }

@@ -28,7 +28,7 @@ class Comment
     public function deleteComment($commentID): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() && $user->getUserRole($user->getUserID()) === 'ADMIN') {
+        if (!$user->isLoggedIn() || $user->getUserRole($user->getUserID()) !== 'ADMIN') {
             throw new Exception('You must be logged in to delete a comment and you have to be an admin to delete a comment');
         }
 
@@ -52,4 +52,14 @@ class Comment
         return $result->fetch_all(MYSQLI_ASSOC);
     }
 
+    public function getComments(): array
+    {
+        $db = new Database();
+        $connection = $db->getConnection();
+        $stmt = $connection->prepare("SELECT * FROM wprg_comments");
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result->fetch_all(MYSQLI_ASSOC);
+    }
 }

@@ -66,7 +66,7 @@ class User
     public function updateUserRole($userID, $role): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() && $user->getUserRole($userID) === 'ADMIN') {
+        if (!$user->isLoggedIn() || $user->getUserRole($userID) !== 'ADMIN') {
             throw new Exception('You must be logged in to update a user role, and you have to be an admin to update an user');
         }
 
@@ -81,7 +81,7 @@ class User
     public function deleteUser($userID): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() && $user->getUserRole($userID) === 'ADMIN') {
+        if (!$user->isLoggedIn() || $user->getUserRole($userID) !== 'ADMIN') {
             throw new Exception('You must be logged in to delete a user, and you have to be an admin to delete an user');
         }
 

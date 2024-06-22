@@ -19,7 +19,7 @@ class Email
     public function getEmails(): array
     {
         $user = new User();
-        if (!$user->isLoggedIn() && $user->getUserRole($user->getUserID()) === 'ADMIN') {
+        if (!$user->isLoggedIn() || $user->getUserRole($user->getUserID()) !== 'ADMIN') {
             throw new Exception('You must be logged in to view emails and you have to be an admin to view emails');
         }
 

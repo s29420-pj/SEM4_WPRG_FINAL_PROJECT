@@ -10,7 +10,7 @@ class Post
     public function createPost($title, $content, $image, $userID, $date): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() && ($user->getUserRole($userID) === 'ADMIN' || $user->getUserRole($userID) === 'AUTHOR')) {
+        if (!$user->isLoggedIn() || ($user->getUserRole($userID) !== 'ADMIN' || $user->getUserRole($userID) !== 'AUTHOR')) {
             throw new Exception('You must be logged in to create a post and you have to be an admin or an author to create a post');
         }
 
@@ -25,7 +25,7 @@ class Post
     public function editPost($postID, $title, $content, $image): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() && ($user->getUserRole($user->getUserID()) === 'ADMIN' || $user->getUserRole($user->getUserID()) === 'AUTHOR')) {
+        if (!$user->isLoggedIn() || ($user->getUserRole($user->getUserID()) !== 'ADMIN' || $user->getUserRole($user->getUserID()) !== 'AUTHOR')) {
             throw new Exception('You must be logged in to edit a post and you have to be an admin or an author to edit a post');
         }
 
@@ -40,7 +40,7 @@ class Post
     public function deletePost($postID): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() && $user->getUserRole($user->getUserID()) === 'ADMIN') {
+        if (!$user->isLoggedIn() || $user->getUserRole($user->getUserID()) !== 'ADMIN') {
             throw new Exception('You must be logged in to delete a post and you have to be an admin to delete a post');
         }
 
