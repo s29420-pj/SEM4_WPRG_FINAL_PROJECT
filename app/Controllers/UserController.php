@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\User;
 use App\Models\Log;
+use App\Models\User;
 
 class UserController
 {
@@ -63,6 +63,11 @@ class UserController
     {
         $this->userModel->login($username, $password);
         $this->logger->createLog('User logged in', time());
+    }
+
+    public function isLoggedIn()
+    {
+        return $this->userModel->isLoggedIn();
     }
 
     public function logout()

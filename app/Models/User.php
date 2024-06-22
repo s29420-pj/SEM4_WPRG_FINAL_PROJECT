@@ -12,7 +12,7 @@ class User
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("INSERT INTO users (username, password, role) VALUES (?, ?, ?)");
+        $stmt = $connection->prepare("INSERT INTO wprg_users (username, password, role) VALUES (?, ?, ?)");
         $stmt->bind_param("sss", $username, $password, $defaultRole);
         $stmt->execute();
         $stmt->close();
@@ -22,7 +22,7 @@ class User
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM users WHERE id = ?");
+        $stmt = $connection->prepare("SELECT * FROM wprg_users WHERE id = ?");
         $stmt->bind_param("i", $userID);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -38,14 +38,14 @@ class User
         }
 
         session_start();
-        return $_SESSION['user_id'];
+        return $_SESSION['id'];
     }
 
     public function getUserRole($userID)
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT role FROM users WHERE id = ?");
+        $stmt = $connection->prepare("SELECT role FROM wprg_users WHERE id = ?");
         $stmt->bind_param("i", $userID);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -62,7 +62,7 @@ class User
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("UPDATE users SET role = ? WHERE id = ?");
+        $stmt = $connection->prepare("UPDATE wprg_users SET role = ? WHERE id = ?");
         $stmt->bind_param("si", $role, $userID);
         $stmt->execute();
         $stmt->close();
@@ -77,7 +77,7 @@ class User
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("DELETE FROM users WHERE id = ?");
+        $stmt = $connection->prepare("DELETE FROM wprg_users WHERE id = ?");
         $stmt->bind_param("i", $userID);
         $stmt->execute();
         $stmt->close();
@@ -87,7 +87,7 @@ class User
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM users");
+        $stmt = $connection->prepare("SELECT * FROM wprg_users");
         $stmt->execute();
         $result = $stmt->get_result();
         $stmt->close();
@@ -103,7 +103,7 @@ class User
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("UPDATE users SET password = ? WHERE id = ?");
+        $stmt = $connection->prepare("UPDATE wprg_users SET password = ? WHERE id = ?");
         $stmt->bind_param("si", $password, $userID);
         $stmt->execute();
         $stmt->close();
@@ -113,7 +113,7 @@ class User
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM users WHERE username = ? AND password = ?");
+        $stmt = $connection->prepare("SELECT * FROM wprg_users WHERE username = ? AND password = ?");
         $stmt->bind_param("ss", $username, $password);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -124,7 +124,7 @@ class User
     public function isLoggedIn(): bool
     {
         session_start();
-        return isset($_SESSION['user_id']);
+        return isset($_SESSION['id']);
     }
 
     public function logout(): void

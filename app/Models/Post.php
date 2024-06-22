@@ -3,6 +3,7 @@
 namespace App\Models;
 
 use Exception;
+use App\Models\Database;
 
 class Post
 {
@@ -15,8 +16,8 @@ class Post
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("INSERT INTO posts (title, content, image, user_id, date) VALUES (?, ?, ?, ?, ?)");
-        $stmt->bind_param("sssss", $title, $content, $image, $userID, $date);
+        $stmt = $connection->prepare("INSERT INTO wprg_posts (title, content, image, date, wprg_users_id) VALUES (?, ?, ?, ?, ?)");
+        $stmt->bind_param("sssss", $title, $content, $image, $date, $userID);
         $stmt->execute();
         $stmt->close();
     }
@@ -30,7 +31,7 @@ class Post
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("UPDATE posts SET title = ?, content = ?, image = ? WHERE id = ?");
+        $stmt = $connection->prepare("UPDATE wprg_posts SET title = ?, content = ?, image = ? WHERE id = ?");
         $stmt->bind_param("sssi", $title, $content, $image, $postID);
         $stmt->execute();
         $stmt->close();
@@ -45,7 +46,7 @@ class Post
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("DELETE FROM posts WHERE id = ?");
+        $stmt = $connection->prepare("DELETE FROM wprg_posts WHERE id = ?");
         $stmt->bind_param("i", $postID);
         $stmt->execute();
         $stmt->close();
@@ -55,7 +56,7 @@ class Post
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM posts WHERE id = ?");
+        $stmt = $connection->prepare("SELECT * FROM wprg_posts WHERE id = ?");
         $stmt->bind_param("i", $postID);
         $stmt->execute();
         $result = $stmt->get_result();
@@ -67,7 +68,7 @@ class Post
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM posts");
+        $stmt = $connection->prepare("SELECT * FROM wprg_posts");
         $stmt->execute();
         $result = $stmt->get_result();
         $stmt->close();
@@ -78,7 +79,7 @@ class Post
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM posts ORDER BY date DESC");
+        $stmt = $connection->prepare("SELECT * FROM wprg_posts ORDER BY date DESC");
         $stmt->execute();
         $result = $stmt->get_result();
         $stmt->close();
@@ -89,7 +90,7 @@ class Post
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT username FROM users JOIN posts ON users.id = posts.user_id WHERE posts.id = ?");
+        $stmt = $connection->prepare("SELECT username FROM wprg_users JOIN wprg_posts ON wprg_users.id = wprg_posts.wprg_users_id WHERE wprg_posts.id = ?");
         $stmt->bind_param("i", $postID);
         $stmt->execute();
         $result = $stmt->get_result();

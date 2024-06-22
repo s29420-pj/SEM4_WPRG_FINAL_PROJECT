@@ -2,8 +2,8 @@
 
 namespace App\Controllers;
 
-use App\Models\Post;
 use App\Models\Log;
+use App\Models\Post;
 
 class PostController
 {
