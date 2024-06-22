@@ -55,7 +55,7 @@ if (!$post) {
             <nav>
                 <ul class="nav">
                     <?php if ($loggedIn): ?>
-                        <li class="nav-item me-3"><a href="logout.php" class="btn btn-danger">LogOut</a></li>
+                        <li class="nav-item me-3"><a href="actions/logout.php" class="btn btn-danger">LogOut</a></li>
                         <?php if ($userRole === 'ADMIN'): ?>
                             <li class="nav-item me-3"><a href="admin.php" class="btn btn-dark">Admin Panel</a></li>
                         <?php endif; ?>
@@ -108,7 +108,7 @@ if (!$post) {
                 </div>
             <?php endforeach; ?>
             <?php if ($loggedIn): ?>
-                <form action="createComment.php" method="post">
+                <form action="actions/createComment.php" method="post">
                     <div class="form-group
                     <?php if (isset($_GET['error'])): ?>
                         has-error
