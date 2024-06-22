@@ -77,4 +77,9 @@ class UserController
         $this->logger->createLog('User logged out', date('Y-m-d H:i:s'));
     }
 
+    public function getUsernameByID($user_id): bool|array|null
+    {
+        return $this->userModel->getUsernameByID($user_id);
+    }
+
 }

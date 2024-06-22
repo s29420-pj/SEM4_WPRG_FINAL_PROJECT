@@ -19,8 +19,8 @@ class Comment
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("INSERT INTO comments (content, post_id, user_id, date) VALUES (?, ?, ?, ?)");
-        $stmt->bind_param("ssss", $content, $postID, $userID, $date);
+        $stmt = $connection->prepare("INSERT INTO wprg_comments (content, wprg_posts_id, wprg_users_id, date) VALUES (?, ?, ?, ?)");
+        $stmt->bind_param("siis", $content, $postID, $userID, $date);
         $stmt->execute();
         $stmt->close();
     }
@@ -34,7 +34,7 @@ class Comment
 
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("DELETE FROM comments WHERE id = ?");
+        $stmt = $connection->prepare("DELETE FROM wprg_comments WHERE id = ?");
         $stmt->bind_param("i", $commentID);
         $stmt->execute();
         $stmt->close();
@@ -44,7 +44,7 @@ class Comment
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM comments WHERE post_id = ?");
+        $stmt = $connection->prepare("SELECT * FROM wprg_comments WHERE wprg_posts_id = ?");
         $stmt->bind_param("i", $postID);
         $stmt->execute();
         $result = $stmt->get_result();
