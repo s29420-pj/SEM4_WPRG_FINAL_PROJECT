@@ -1,10 +1,10 @@
 <?php
-require_once __DIR__ . '/../vendor/autoload.php';
+require_once __DIR__ . '/../../vendor/autoload.php';
 
-use App\Models\User;
+use App\Controllers\UserController;
 
-$user = new User();
-$user->logout();
+$userController = new UserController();
+$userController->logout();
 
-header('Location: index.php');
+header('Location: ../index.php');
 exit();
