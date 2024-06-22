@@ -8,14 +8,27 @@ class User
 {
     public function createUser($username, $password): void
     {
-        $defaultRole = 'USER';
-
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("INSERT INTO wprg_users (username, password, role) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $username, $password, $defaultRole);
+
+        // Check if a user with the given username already exists
+        $stmt = $connection->prepare("SELECT * FROM wprg_users WHERE username = ?");
+        $stmt->bind_param("s", $username);
         $stmt->execute();
+        $result = $stmt->get_result();
         $stmt->close();
+
+        if ($result->num_rows > 0) {
+            // A user with the given username already exists
+            throw new Exception('A user with this username already exists');
+        } else {
+            // No user with the given username exists, so create a new user
+            $defaultRole = 'USER';
+            $stmt = $connection->prepare("INSERT INTO wprg_users (username, password, role) VALUES (?, ?, ?)");
+            $stmt->bind_param("sss", $username, $password, $defaultRole);
+            $stmt->execute();
+            $stmt->close();
+        }
     }
 
     public function getUser($userID): bool|array|null
