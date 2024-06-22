@@ -49,7 +49,9 @@ if (!$post) {
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
             <div class="logo">
-                <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
+                <a href="index.php">
+                    <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
+                </a>
             </div>
             <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
             <nav>
@@ -67,6 +69,7 @@ if (!$post) {
                         <li class="nav-item me-3"><a href="register.php" class="btn btn-dark">Register</a></li>
                     <?php endif; ?>
                     <li class="nav-item"><a href="contact.php" class="btn btn-light">Contact</a></li>
+                    <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
                 </ul>
             </nav>
         </div>

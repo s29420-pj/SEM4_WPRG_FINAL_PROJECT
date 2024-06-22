@@ -46,7 +46,9 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
             <div class="logo">
-                <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
+                <a href="index.php">
+                    <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
+                </a>
             </div>
             <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
         </div>

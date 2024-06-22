@@ -37,13 +37,18 @@ $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
             <div class="logo">
-                <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
+                <a href="index.php">
+                    <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
+                </a>
             </div>
             <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
             <nav>
                 <ul class="nav">
                     <?php if ($loggedIn): ?>
                         <li class="nav-item me-3"><a href="actions/logout.php" class="btn btn-danger">LogOut</a></li>
+                        <?php if ($userRole === 'ADMIN' || $userRole === 'AUTHOR'): ?>
+                            <li class="nav-item me-3"><a href="createPost.php" class="btn btn-primary">Create Post</a></li>
+                        <?php endif; ?>
                         <?php if ($userRole === 'ADMIN'): ?>
                             <li class="nav-item me-3"><a href="admin.php" class="btn btn-dark">Admin Panel</a></li>
                         <?php endif; ?>
@@ -52,6 +57,7 @@ $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
                         <li class="nav-item me-3"><a href="register.php" class="btn btn-dark">Register</a></li>
                     <?php endif; ?>
                     <li class="nav-item"><a href="contact.php" class="btn btn-light">Contact</a></li>
+                    <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
                 </ul>
             </nav>
         </div>
