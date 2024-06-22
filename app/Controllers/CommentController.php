@@ -7,8 +7,8 @@ use App\Models\Log;
 
 class CommentController
 {
-    protected $commentModel;
-    protected $logger;
+    protected Comment $commentModel;
+    protected Log $logger;
 
     public function __construct()
     {
@@ -16,19 +16,19 @@ class CommentController
         $this->logger = new Log();
     }
 
-    public function createComment($content, $postID, $userID)
+    public function createComment($content, $postID, $userID): void
     {
         $this->commentModel->createComment($content, $postID, $userID, date('Y-m-d H:i:s'));
         $this->logger->createLog('Comment created', date('Y-m-d H:i:s'));
     }
 
-    public function deleteComment($commentID)
+    public function deleteComment($commentID): void
     {
         $this->commentModel->deleteComment($commentID);
         $this->logger->createLog('Comment deleted', date('Y-m-d H:i:s'));
     }
 
-    public function getCommentsByPostID($postID)
+    public function getCommentsByPostID($postID): array
     {
         return $this->commentModel->getCommentsByPostID($postID);
     }

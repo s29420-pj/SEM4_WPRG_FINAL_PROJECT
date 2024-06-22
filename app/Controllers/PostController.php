@@ -7,8 +7,8 @@ use App\Models\Post;
 
 class PostController
 {
-    protected $postModel;
-    protected $logger;
+    protected Post $postModel;
+    protected Log $logger;
 
     public function __construct()
     {

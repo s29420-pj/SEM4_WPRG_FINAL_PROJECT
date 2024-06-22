@@ -7,8 +7,8 @@ use App\Models\User;
 
 class UserController
 {
-    protected $userModel;
-    protected $logger;
+    protected User $userModel;
+    protected Log $logger;
 
     public function __construct()
     {
@@ -16,13 +16,13 @@ class UserController
         $this->logger = new Log();
     }
 
-    public function createUser($username, $password)
+    public function createUser($username, $password): void
     {
         $this->userModel->createUser($username, $password);
         $this->logger->createLog('User created', date('Y-m-d H:i:s'));
     }
 
-    public function getUser($userID)
+    public function getUser($userID): bool|array|null
     {
         return $this->userModel->getUser($userID);
     }
@@ -36,24 +36,24 @@ class UserController
         return $this->userModel->getUserRole($userID);
     }
 
-    public function updateUserRole($userID, $role)
+    public function updateUserRole($userID, $role): void
     {
         $this->userModel->updateUserRole($userID, $role);
         $this->logger->createLog('User role updated', date('Y-m-d H:i:s'));
     }
 
-    public function deleteUser()
+    public function deleteUser(): void
     {
         $this->userModel->deleteUser();
         $this->logger->createLog('User deleted', date('Y-m-d H:i:s'));
     }
 
-    public function getUsers()
+    public function getUsers(): array
     {
         return $this->userModel->getUsers();
     }
 
-    public function resetPassword($userID, $password)
+    public function resetPassword($userID, $password): void
     {
         $this->userModel->resetPassword($userID, $password);
         $this->logger->createLog('Password reset', date('Y-m-d H:i:s'));
@@ -66,12 +66,12 @@ class UserController
 
     }
 
-    public function isLoggedIn()
+    public function isLoggedIn(): bool
     {
         return $this->userModel->isLoggedIn();
     }
 
-    public function logout()
+    public function logout(): void
     {
         $this->userModel->logout();
         $this->logger->createLog('User logged out', date('Y-m-d H:i:s'));
