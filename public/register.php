@@ -45,14 +45,29 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <header class="bg-light py-3">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="logo">
+            <div class="d-flex justify-content-start align-items-center logo">
                 <a href="index.php">
                     <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
                 </a>
+                <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
             </div>
-            <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
+            <nav>
+                <ul class="nav">
+                    <?php if (!$loggedIn): ?>
+                        <li class="nav-item me-2"><a href="login.php" class="btn btn-light">Zaloguj</a></li>
+                        <li class="nav-item me-2"><a href="register.php" class="btn btn-dark">Zarejestruj</a></li>
+                    <?php endif; ?>
+                    <?php if ($loggedIn && $userRole !== 'AUTHOR'): ?>
+                        <li class="nav-item me-1"><a href="contact.php" class="btn btn-light">Kontakt</a></li>
+                    <?php endif; ?>
+                    <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
+                    <?php if ($loggedIn): ?>
+                        <li class="nav-item me-1"><a href="profile.php" class="btn btn-light">Profil</a></li>
+                        <li class="nav-item me-1"><a href="actions/logout.php" class="btn btn-danger">Wyloguj</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
-    </div>
 </header>
 <div class="container flex-row">
     <div class="row justify-content-center align-self-center">

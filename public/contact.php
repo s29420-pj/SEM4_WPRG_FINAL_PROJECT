@@ -10,6 +10,7 @@ $postController = new PostController();
 $posts = $postController->getPosts();
 $loggedIn = $user->isLoggedIn();
 $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
+
 ?>
 
 <!DOCTYPE html>
@@ -36,35 +37,42 @@ $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
 <header class="bg-light py-3">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="logo">
+            <div class="d-flex justify-content-start align-items-center logo">
                 <a href="index.php">
                     <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
                 </a>
+                <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
             </div>
-            <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
             <nav>
                 <ul class="nav">
                     <?php if ($loggedIn): ?>
-                        <li class="nav-item me-3"><a href="actions/logout.php" class="btn btn-danger">LogOut</a></li>
                         <?php if ($userRole === 'ADMIN' || $userRole === 'AUTHOR'): ?>
-                            <li class="nav-item me-3"><a href="createPost.php" class="btn btn-primary">Create Post</a></li>
+                            <li class="nav-item me-2"><a href="createPost.php" class="btn btn-success">Utwórz Post</a></li>
+                            <li class="nav-item me-2"><a href="mail.php" class="btn btn-info">Mail</a></li>
                         <?php endif; ?>
                         <?php if ($userRole === 'ADMIN'): ?>
-                            <li class="nav-item me-3"><a href="admin.php" class="btn btn-dark">Admin Panel</a></li>
+                            <li class="nav-item me-2"><a href="admin.php" class="btn btn-dark">Panel Administratora</a></li>
                         <?php endif; ?>
                     <?php else: ?>
-                        <li class="nav-item me-3"><a href="login.php" class="btn btn-light">Login</a></li>
-                        <li class="nav-item me-3"><a href="register.php" class="btn btn-dark">Register</a></li>
+                        <li class="nav-item me-2"><a href="login.php" class="btn btn-light">Zaloguj</a></li>
+                        <li class="nav-item me-2"><a href="register.php" class="btn btn-dark">Zarejestruj</a></li>
                     <?php endif; ?>
-                    <li class="nav-item"><a href="contact.php" class="btn btn-light">Contact</a></li>
+                    <?php if ($loggedIn && $userRole === 'USER'): ?>
+                        <li class="nav-item me-1"><a href="contact.php" class="btn btn-light">Kontakt</a></li>
+                    <?php endif; ?>
                     <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
+                    <?php if ($loggedIn): ?>
+                        <li class="nav-item me-1"><a href="profile.php" class="btn btn-light">Profil</a></li>
+                        <li class="nav-item me-1"><a href="actions/logout.php" class="btn btn-danger">Wyloguj</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
     </div>
 </header>
 <div class="container">
-    <h2 class="text-center mt-5">Contact</h2>
+    <hr class="my-4">
+    <h2 class="text-center mt-5">Kontakt</h2>
     <div class="row justify-content-center">
         <div class="col-md-6">
             <form action="actions/sendEmail.php" method="post">
@@ -73,15 +81,17 @@ $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
                     <input type="email" class="form-control" id="email" name="email" required>
                 </div>
                 <div class="form-group">
-                    <label for="subject">Subject</label>
+                    <label for="subject">Temat</label>
                     <input type="text" class="form-control" id="subject" name="subject" required>
                 </div>
                 <div class="form-group">
-                    <label for="message">Message</label>
+                    <label for="message">Wiadomość</label>
                     <textarea class="form-control" id="message" name="message" rows="3" required></textarea>
                 </div>
-                <button type="submit" class="btn btn-primary mt-3">Send</button>
+                <button type="submit" class="btn btn-primary mt-3">Wyślij</button>
             </form>
+        </div>
+    </div>
 </div>
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">

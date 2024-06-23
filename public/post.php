@@ -57,82 +57,93 @@ if (!$post) {
             <nav>
                 <ul class="nav">
                     <?php if ($loggedIn): ?>
-                        <li class="nav-item me-3"><a href="actions/logout.php" class="btn btn-danger">LogOut</a></li>
-                        <?php if ($userRole === 'ADMIN'): ?>
-                            <li class="nav-item me-3"><a href="admin.php" class="btn btn-dark">Admin Panel</a></li>
+                        <?php if ($userRole === 'ADMIN' || $userRole === 'AUTHOR'): ?>
+                            <li class="nav-item me-2"><a href="createPost.php" class="btn btn-success">Utwórz Post</a></li>
+                            <li class="nav-item me-2"><a href="mail.php" class="btn btn-info">Mail</a></li>
                         <?php endif; ?>
-                        <?php if ($userRole === 'AUTHOR' || $userRole === 'ADMIN'): ?>
-                            <li class="nav-item me-3"><a href="createPost.php" class="btn btn-dark">Create Post</a></li>
+                        <?php if ($userRole === 'ADMIN'): ?>
+                            <li class="nav-item me-2"><a href="admin.php" class="btn btn-dark">Panel Administratora</a></li>
                         <?php endif; ?>
                     <?php else: ?>
-                        <li class="nav-item me-3"><a href="login.php" class="btn btn-light">Login</a></li>
-                        <li class="nav-item me-3"><a href="register.php" class="btn btn-dark">Register</a></li>
+                        <li class="nav-item me-2"><a href="login.php" class="btn btn-light">Zaloguj</a></li>
+                        <li class="nav-item me-2"><a href="register.php" class="btn btn-dark">Zarejestruj</a></li>
                     <?php endif; ?>
-                    <li class="nav-item"><a href="contact.php" class="btn btn-light">Contact</a></li>
+                    <?php if ($loggedIn && $userRole !== 'AUTHOR'): ?>
+                        <li class="nav-item me-1"><a href="contact.php" class="btn btn-light">Kontakt</a></li>
+                    <?php endif; ?>
                     <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
+                    <?php if ($loggedIn): ?>
+                        <li class="nav-item me-1"><a href="profile.php" class="btn btn-light">Profil</a></li>
+                        <li class="nav-item me-1"><a href="actions/logout.php" class="btn btn-danger">Wyloguj</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
     </div>
 </header>
 <div class="container">
-    <hr class="my-4">
     <main class="py-4">
-        <div class="row">
-            <div class="col-md-12 mb-4">
-                <div class="card h-100">
-                    <img src="<?= $post['image'] ?>" class="card-img-top" alt="Post Image">
-                    <div class="card-body">
-                        <h2 class="card-title"><?= $post['title'] ?></h2>
-                        <p class="card-text"><?= $post['content'] ?></p>
-                        <p class="card-text"><small class="text-muted">Author: <?= $postController->getPostAuthor($post['id']) ?></small></p>
-                    </div>
+        <hr class="my-4">
+        <div class="col-md-12 mb-1">
+            <div class="d-flex justify-content-end mb-2">
+                <a class="btn btn-light btn-sm m-1" href="post.php?id=<?php echo $postController->previousPost($postId)?>">Poprzedni</a>
+                <a class="btn btn-light btn-sm m-1" href="post.php?id=<?php echo $postController->nextPost($postId)?>">Następny</a>
+            </div>
+            <div class="card h-100">
+                <img src="<?= $post['image'] ?>" class="card-img-top" alt="Post Image">
+                <div class="card-body">
+                    <h2 class="card-title"><?= $post['title'] ?></h2>
+                    <p class="card-text"><?= $post['content'] ?></p>
+                    <p class="card-text"><small class="text-muted">Autor: <?= $postController->getPostAuthor($post['id']) ?></small></p>
+                    <p class="card-text"><small class="text-muted">Data: <?= $postController->getPostDate($post['id']) ?></small></p>
                 </div>
             </div>
         </div>
     </main>
 </div>
 <div class="container">
-    <div class="row">
-        <div class="col-md-12">
-            <h2>Comments</h2>
-            <?php foreach ($commentController->getCommentsByPostID($postId) as $comment): ?>
-                <div class="card mb-3">
-                    <div class="card-body">
-                        <h5 class="card-title
+    <div class="col-md-12 mb-5">
+        <h2>Komentarze</h2>
+        <?php foreach ($commentController->getCommentsByPostID($postId) as $comment): ?>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title
                         <?php if ($comment['wprg_users_id'] === $userController->getUserID()): ?>
                             text-primary
                         <?php endif; ?>
                         ">
-                            <?= $comment['content'] ?>
-                        </h5>
-                        <p class="card-text"><small class="text-muted">Author: <?= $userController->getUsernameByID($comment['wprg_users_id'])['username'] ?></small></p>
-                    </div>
+                        <?= $comment['content'] ?>
+                    </h5>
+                    <p class="card-text">
+                        <small class="text-muted">
+                            Autor:
+                            <?php
+                            $authorID = $comment['wprg_users_id'];
+                            if ($authorID) {
+                                echo $userController->getUsernameByID($authorID)['username'];
+                            } else {
+                                echo 'Gość';
+                            }
+                            ?>
+                        </small>
+                    </p>
                 </div>
-            <?php endforeach; ?>
-            <?php if ($loggedIn): ?>
-                <form action="actions/createComment.php" method="post">
-                    <div class="form-group
-                    <?php if (isset($_GET['error'])): ?>
-                        has-error
-                    <?php endif; ?>
-                    ">
-                        <label for="content">Content</label>
-                        <textarea class="form-control" id="content" name="content" required></textarea>
-                        <?php if (isset($_GET['error'])): ?>
-                            <p class="text-danger">Comment content cannot be empty</p>
-                        <?php endif; ?>
-                    </div>
-                    <input type="hidden" name="post_id" value="<?= $postId ?>">
-                    <button type="submit" class="btn btn-primary">Add Comment</button>
-                </form>
-            <?php else: ?>
-                <p>You must be logged in to add a comment</p>
-            <?php endif; ?>
-        </div>
+            </div>
+        <?php endforeach; ?>
+
+        <form action="actions/createComment.php" method="post">
+            <div class="form-group">
+                <label for="content">Napisz Komentarz</label>
+                <textarea class="form-control" id="content" name="content" required></textarea>
+                <?php if (isset($_GET['error'])): ?>
+                    <p class="text-danger">Komentarz nie może być pusty.</p>
+                <?php endif; ?>
+            </div>
+            <input type="hidden" name="post_id" value="<?= $postId ?>">
+            <button type="submit" class="btn btn-primary mt-3">Dodaj Komentarz</button>
+        </form>
     </div>
 </div>
-
 <footer class="footer mt-auto py-3 bg-light">
     <div class="container text-center">
         <p>Indeks: s29420</p>

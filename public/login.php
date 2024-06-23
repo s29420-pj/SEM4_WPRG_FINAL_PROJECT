@@ -3,11 +3,13 @@ require_once __DIR__ . '/../vendor/autoload.php';
 
 use App\Controllers\UserController;
 
+$userController = new UserController();
+$loggedIn = $userController->isLoggedIn();
+$userRole = $loggedIn ? $userController->getUserRole($userController->getUserID()) : null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
-
-    $userController = new UserController();
 
     if ($userController->login($username, $password)) {
         // Użytkownik jest zalogowany, przekieruj go do strony index.php
@@ -45,18 +47,42 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 <header class="bg-light py-3">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="logo">
+            <div class="d-flex justify-content-start align-items-center logo">
                 <a href="index.php">
                     <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
                 </a>
+                <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
             </div>
-            <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
+            <nav>
+                <ul class="nav">
+                    <?php if ($loggedIn): ?>
+                        <?php if ($userRole === 'ADMIN' || $userRole === 'AUTHOR'): ?>
+                            <li class="nav-item me-2"><a href="createPost.php" class="btn btn-success">Utwórz Post</a></li>
+                            <li class="nav-item me-2"><a href="mail.php" class="btn btn-info">Mail</a></li>
+                        <?php endif; ?>
+                        <?php if ($userRole === 'ADMIN'): ?>
+                            <li class="nav-item me-2"><a href="admin.php" class="btn btn-dark">Panel Administratora</a></li>
+                        <?php endif; ?>
+                    <?php else: ?>
+                        <li class="nav-item me-2"><a href="login.php" class="btn btn-light">Zaloguj</a></li>
+                        <li class="nav-item me-2"><a href="register.php" class="btn btn-dark">Zarejestruj</a></li>
+                    <?php endif; ?>
+                    <?php if ($loggedIn && $userRole !== 'AUTHOR'): ?>
+                        <li class="nav-item me-1"><a href="contact.php" class="btn btn-light">Kontakt</a></li>
+                    <?php endif; ?>
+                    <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
+                    <?php if ($loggedIn): ?>
+                        <li class="nav-item me-1"><a href="profile.php" class="btn btn-light">Profil</a></li>
+                        <li class="nav-item me-1"><a href="actions/logout.php" class="btn btn-danger">Wyloguj</a></li>
+                    <?php endif; ?>
+                </ul>
+            </nav>
         </div>
-    </div>
 </header>
 <div class="container flex-row">
+    <hr class="my-4">
     <div class="row justify-content-center align-self-center">
-        <div class="col-md-6">
+        <div class="col-md-6 mt-5">
             <h2 class="text-center">Logowanie</h2>
             <form action="login.php" method="post">
                 <div class="form-group">
