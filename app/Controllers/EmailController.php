@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Email;
 use App\Models\Log;
+use Exception;
 
 class EmailController
 {
@@ -18,8 +19,13 @@ class EmailController
 
     public function sendEmail($email, $subject, $message): void
     {
-        $this->emailModel->sendEmail($email, $subject, $message);
-        $this->logger->createLog('Email sent', date('Y-m-d H:i:s'));
+        try {
+            $this->emailModel->sendEmail($email, $subject, $message);
+            $this->logger->createLog('Email sent', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function getEmails(): array

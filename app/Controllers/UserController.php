@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Log;
 use App\Models\User;
+use Exception;
 
 class UserController
 {
@@ -18,8 +19,13 @@ class UserController
 
     public function createUser($username, $password): void
     {
-        $this->userModel->createUser($username, $password);
-        $this->logger->createLog('User created', date('Y-m-d H:i:s'));
+        try {
+            $this->userModel->createUser($username, $password);
+            $this->logger->createLog('User created', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function getUser($userID): bool|array|null
@@ -39,14 +45,25 @@ class UserController
 
     public function updateUserRole($userID, $role): void
     {
-        $this->userModel->updateUserRole($userID, $role);
-        $this->logger->createLog('User role updated', date('Y-m-d H:i:s'));
+        try {
+            $this->userModel->updateUserRole($userID, $role);
+            $this->logger->createLog('User role updated', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
+
     }
 
     public function deleteUser($userID): void
     {
-        $this->userModel->deleteUser($userID);
-        $this->logger->createLog('User deleted', date('Y-m-d H:i:s'));
+        try {
+            $this->userModel->deleteUser($userID);
+            $this->logger->createLog('User deleted', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function getUsers(): array
@@ -56,15 +73,25 @@ class UserController
 
     public function resetPassword($userID, $password): void
     {
-        $this->userModel->resetPassword($userID, $password);
-        $this->logger->createLog('Password reset', date('Y-m-d H:i:s'));
+        try {
+            $this->userModel->resetPassword($userID, $password);
+            $this->logger->createLog('Password reset', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function login($username, $password): bool
     {
-        $this->logger->createLog('User logged in', date('Y-m-d H:i:s'));
-        return $this->userModel->login($username, $password);
+        try {
+            $this->userModel->login($username, $password);
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
 
+        return $this->userModel->login($username, $password);
     }
 
     public function isLoggedIn(): bool
@@ -74,8 +101,13 @@ class UserController
 
     public function logout(): void
     {
-        $this->userModel->logout();
-        $this->logger->createLog('User logged out', date('Y-m-d H:i:s'));
+        try {
+            $this->userModel->logout();
+            $this->logger->createLog('User logged out', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function getUsernameByID($user_id): bool|array|null

@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Comment;
 use App\Models\Log;
+use Exception;
 
 class CommentController
 {
@@ -12,20 +13,34 @@ class CommentController
 
     public function __construct()
     {
-        $this->commentModel = new Comment();
-        $this->logger = new Log();
+        try {
+            $this->commentModel = new Comment();
+            $this->logger = new Log();
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+        }
     }
 
     public function createComment($content, $postID, $userID): void
     {
-        $this->commentModel->createComment($content, $postID, $userID, date('Y-m-d H:i:s'));
-        $this->logger->createLog('Comment created', date('Y-m-d H:i:s'));
+        try {
+            $this->commentModel->createComment($content, $postID, $userID, date('Y-m-d H:i:s'));
+            $this->logger->createLog('Comment created', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function deleteComment($commentID): void
     {
-        $this->commentModel->deleteComment($commentID);
-        $this->logger->createLog('Comment deleted', date('Y-m-d H:i:s'));
+        try {
+            $this->commentModel->deleteComment($commentID);
+            $this->logger->createLog('Comment deleted', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function getCommentsByPostID($postID): array

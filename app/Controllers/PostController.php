@@ -4,6 +4,7 @@ namespace App\Controllers;
 
 use App\Models\Log;
 use App\Models\Post;
+use Exception;
 
 class PostController
 {
@@ -18,20 +19,36 @@ class PostController
 
     public function createPost($title, $content, $image, $userID): void
     {
-        $this->postModel->createPost($title, $content, $image, $userID, date('Y-m-d H:i:s'));
-        $this->logger->createLog('Post created', date('Y-m-d H:i:s'));
+        try {
+            $this->postModel->createPost($title, $content, $image, $userID, date('Y-m-d H:i:s'));
+            $this->logger->createLog('Post created', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
+
     }
 
     public function editPost($postID, $title, $content, $image): void
     {
-        $this->postModel->editPost($postID, $title, $content, $image);
-        $this->logger->createLog('Post edited', date('Y-m-d H:i:s'));
+        try {
+            $this->postModel->editPost($postID, $title, $content, $image);
+            $this->logger->createLog('Post edited', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function deletePost($postID): void
     {
-        $this->postModel->deletePost($postID);
-        $this->logger->createLog('Post deleted', date('Y-m-d H:i:s'));
+        try {
+            $this->postModel->deletePost($postID);
+            $this->logger->createLog('Post deleted', date('Y-m-d H:i:s'));
+        } catch (Exception $e) {
+            echo "Error: " . $e->getMessage();
+            header("Location: error.php");
+        }
     }
 
     public function getPostByID($postID): bool|array|null
