@@ -1,0 +1,33 @@
+# .gitignore
+
+# Ignore system files
+.DS_Store
+Thumbs.db
+
+# Ignore configuration files that may contain sensitive information
+.env
+
+# Ignore files related to IDEs and code editors
+.idea/
+.vscode/
+*.sublime-project
+*.sublime-workspace
+
+# Ignore PHP dependency directories
+/vendor/
+
+# Ignore Composer's .lock file
+/composer.lock
+
+# Ignore node_modules
+/node_modules/
+
+# Ignore logs
+/logs/
+*.log
+
+# Ignore PHP compiled files
+*.phpc
+
+# Ignore user uploads
+/storage/uploads/*
