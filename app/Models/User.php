@@ -10,8 +10,8 @@ class User
     {
         $db = new Database();
         $connection = $db->getConnection();
+        $password = password_hash($password, PASSWORD_DEFAULT);
 
-        // Check if a user with the given username already exists
         $stmt = $connection->prepare("SELECT * FROM wprg_users WHERE username = ?");
         $stmt->bind_param("s", $username);
         $stmt->execute();
@@ -19,10 +19,8 @@ class User
         $stmt->close();
 
         if ($result->num_rows > 0) {
-            // A user with the given username already exists
             throw new Exception('A user with this username already exists');
         } else {
-            // No user with the given username exists, so create a new user
             $defaultRole = 'USER';
             $stmt = $connection->prepare("INSERT INTO wprg_users (username, password, role) VALUES (?, ?, ?)");
             $stmt->bind_param("sss", $username, $password, $defaultRole);
@@ -88,7 +86,7 @@ class User
         return $result->fetch_assoc()['role'];
     }
 
-    public function deleteUser($userID)
+    public function deleteUser($userID): void
     {
         $user = new User();
         if (!$user->isLoggedIn() || $user->getUserRole($user->getUserID()) !== 'ADMIN') {
@@ -117,6 +115,8 @@ class User
     public function resetPassword($userID, $password): void
     {
         $user = new User();
+        $password = password_hash($password, PASSWORD_DEFAULT);
+
         if (!$user->isLoggedIn()) {
             throw new Exception('You must be logged in to reset your password');
         }
@@ -133,14 +133,14 @@ class User
     {
         $db = new Database();
         $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM wprg_users WHERE username = ? AND password = ?");
-        $stmt->bind_param("ss", $username, $password);
+        $stmt = $connection->prepare("SELECT * FROM wprg_users WHERE username = ?");
+        $stmt->bind_param("s", $username);
         $stmt->execute();
         $result = $stmt->get_result();
         $stmt->close();
         $user = $result->fetch_assoc();
 
-        if ($user) {
+        if ($user && password_verify($password, $user['password'])) {
             if (session_status() == PHP_SESSION_NONE) {
                 session_start();
             }
