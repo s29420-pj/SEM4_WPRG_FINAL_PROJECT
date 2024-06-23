@@ -10,7 +10,7 @@ class Post
     public function createPost($title, $content, $image, $userID, $date): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() || ($user->getUserRole($userID) !== 'ADMIN' || $user->getUserRole($userID) !== 'AUTHOR')) {
+        if (!$user->isLoggedIn() || ($user->getUserRole($userID) !== 'ADMIN' && $user->getUserRole($userID) !== 'AUTHOR')) {
             throw new Exception('You must be logged in to create a post and you have to be an admin or an author to create a post');
         }
 
@@ -25,8 +25,9 @@ class Post
     public function editPost($postID, $title, $content, $image): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() || ($user->getUserRole($user->getUserID()) !== 'ADMIN' || $user->getUserRole($user->getUserID()) !== 'AUTHOR')) {
-            throw new Exception('You must be logged in to edit a post and you have to be an admin or an author to edit a post');
+        $post = $this->getPostByID($postID);
+        if (!$user->isLoggedIn() || $user->getUserRole($user->getUserID()) !== 'ADMIN' && ($user->getUserRole($user->getUserID()) !== 'AUTHOR' && $user->getUserID() !== $post['wprg_users_id'])) {
+            throw new Exception('You must be logged in to edit a post and you have to be an admin or author to delete a post');
         }
 
         $db = new Database();
@@ -40,8 +41,9 @@ class Post
     public function deletePost($postID): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() || $user->getUserRole($user->getUserID()) !== 'ADMIN') {
-            throw new Exception('You must be logged in to delete a post and you have to be an admin to delete a post');
+        $post = $this->getPostByID($postID);
+        if (!$user->isLoggedIn() || $user->getUserRole($user->getUserID()) !== 'ADMIN' && ($user->getUserRole($user->getUserID()) !== 'AUTHOR' && $user->getUserID() !== $post['wprg_users_id'])) {
+            throw new Exception('You must be logged in to delete a post and you have to be an admin or author to delete a post');
         }
 
         $db = new Database();
@@ -96,5 +98,43 @@ class Post
         $result = $stmt->get_result();
         $stmt->close();
         return $result->fetch_assoc()['username'];
+    }
+
+    public function getPostDate($postID)
+    {
+        $db = new Database();
+        $connection = $db->getConnection();
+        $stmt = $connection->prepare("SELECT date FROM wprg_posts WHERE id = ?");
+        $stmt->bind_param("i", $postID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result->fetch_assoc()['date'];
+    }
+
+    public function nextPost($postID): ?int
+    {
+        $db = new Database();
+        $connection = $db->getConnection();
+        $stmt = $connection->prepare("SELECT id FROM wprg_posts WHERE id > ? ORDER BY id ASC LIMIT 1");
+        $stmt->bind_param("i", $postID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        $row = $result->fetch_assoc();
+        return $row ? $row['id'] : null;
+    }
+
+    public function previousPost($postID): ?int
+    {
+        $db = new Database();
+        $connection = $db->getConnection();
+        $stmt = $connection->prepare("SELECT id FROM wprg_posts WHERE id < ? ORDER BY id ASC LIMIT 1");
+        $stmt->bind_param("i", $postID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        $row = $result->fetch_assoc();
+        return $row ? $row['id'] : null;
     }
 }

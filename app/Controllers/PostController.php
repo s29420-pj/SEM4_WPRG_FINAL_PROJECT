@@ -54,4 +54,18 @@ class PostController
         return $this->postModel->getPostAuthor($postID);
     }
 
+    public function getPostDate($postID)
+    {
+        return $this->postModel->getPostDate($postID);
+    }
+
+    public function nextPost($postID): ?int
+    {
+        return $this->postModel->nextPost($postID);
+    }
+
+    public function previousPost($postID): ?int
+    {
+        return $this->postModel->previousPost($postID);
+    }
 }

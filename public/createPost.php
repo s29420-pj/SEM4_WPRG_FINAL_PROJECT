@@ -13,9 +13,13 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $content = $_POST['content'];
     $image = $_FILES['image']['name'] ?? null;
 
-    if (empty($title) || empty($content) || empty($image)) {
+    if (empty($title) || empty($content)) {
         header("Location: createPost.php?error=empty fields");
         exit();
+    }
+
+    if (empty($image)) {
+        $image = '../storage/default.jpg';
     }
 
     $target = '../storage/' . $image;
@@ -62,18 +66,25 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
             <nav>
                 <ul class="nav">
                     <?php if ($loggedIn): ?>
-                        <li class="nav-item me-3"><a href="actions/logout.php" class="btn btn-danger">LogOut</a></li>
                         <?php if ($userRole === 'ADMIN' || $userRole === 'AUTHOR'): ?>
-                            <li class="nav-item me-3"><a href="createPost.php" class="btn btn-primary">Create Post</a></li>
+                            <li class="nav-item me-2"><a href="createPost.php" class="btn btn-success">Utwórz Post</a></li>
+                            <li class="nav-item me-2"><a href="mail.php" class="btn btn-info">Mail</a></li>
                         <?php endif; ?>
                         <?php if ($userRole === 'ADMIN'): ?>
-                            <li class="nav-item me-3"><a href="admin.php" class="btn btn-dark">Admin Panel</a></li>
+                            <li class="nav-item me-2"><a href="admin.php" class="btn btn-dark">Panel Administratora</a></li>
                         <?php endif; ?>
                     <?php else: ?>
-                        <li class="nav-item me-3"><a href="login.php" class="btn btn-light">Login</a></li>
-                        <li class="nav-item me-3"><a href="register.php" class="btn btn-dark">Register</a></li>
+                        <li class="nav-item me-2"><a href="login.php" class="btn btn-light">Zaloguj</a></li>
+                        <li class="nav-item me-2"><a href="register.php" class="btn btn-dark">Zarejestruj</a></li>
                     <?php endif; ?>
-                    <li class="nav-item"><a href="contact.php" class="btn btn-light">Contact</a></li>
+                    <?php if ($loggedIn && $userRole === 'USER'): ?>
+                        <li class="nav-item me-1"><a href="contact.php" class="btn btn-light">Kontakt</a></li>
+                    <?php endif; ?>
+                    <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
+                    <?php if ($loggedIn): ?>
+                        <li class="nav-item me-1"><a href="profile.php" class="btn btn-light">Profil</a></li>
+                        <li class="nav-item me-1"><a href="actions/logout.php" class="btn btn-danger">Wyloguj</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
@@ -81,15 +92,16 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
 </header>
 <div class="container">
     <hr class="my-4">
+    <h2 class="text-center mt-5">Utwórz Post</h2>
     <main class="py-4">
         <form action="createPost.php" method="post" enctype="multipart/form-data">
-            <label for="title">Title:</label><br>
+            <label for="title">Tytuł:</label><br>
             <input type="text" id="title" name="title" class="form-control"><br>
-            <label for="content">Content:</label><br>
+            <label for="content">Zawartość:</label><br>
             <textarea id="content" name="content" class="form-control"></textarea><br>
-            <label for="image">Image:</label><br>
+            <label for="image">Obrazek (opcjonalnie):</label><br>
             <input type="file" id="image" name="image" class="form-control"><br>
-            <input type="submit" value="Create Post" class="btn btn-primary">
+            <input type="submit" value="Utwórz Post" class="btn btn-primary">
         </form>
     </main>
 </div>

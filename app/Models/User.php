@@ -66,7 +66,9 @@ class User
     public function updateUserRole($userID, $role): void
     {
         $user = new User();
-        if (!$user->isLoggedIn() || $user->getUserRole($userID) !== 'ADMIN') {
+        $loggedInUserID = $user->getUserID();
+
+        if (!$user->isLoggedIn() || $user->getUserRole($loggedInUserID) !== 'ADMIN') {
             throw new Exception('You must be logged in to update a user role, and you have to be an admin to update an user');
         }
 
@@ -78,19 +80,19 @@ class User
         $stmt->close();
     }
 
-    public function deleteUser($userID): void
+    public function deleteUser($userID)
     {
         $user = new User();
-        if (!$user->isLoggedIn() || $user->getUserRole($userID) !== 'ADMIN') {
-            throw new Exception('You must be logged in to delete a user, and you have to be an admin to delete an user');
+        if (!$user->isLoggedIn() || $user->getUserRole($user->getUserID()) !== 'ADMIN') {
+            throw new Exception('You must be logged in to delete a user, and you have to be an admin to delete a user');
         }
 
-        $db = new Database();
-        $connection = $db->getConnection();
-        $stmt = $connection->prepare("DELETE FROM wprg_users WHERE id = ?");
-        $stmt->bind_param("i", $userID);
+        $connection = (new Database())->getConnection();
+        $query = 'DELETE FROM wprg_users WHERE id = ?';
+        $stmt = $connection->prepare($query);
+        $stmt->bind_param('i', $userID);
         $stmt->execute();
-        $stmt->close();
+        $connection->close();
     }
 
     public function getUsers(): array

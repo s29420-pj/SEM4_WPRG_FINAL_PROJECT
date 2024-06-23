@@ -42,9 +42,9 @@ class UserController
         $this->logger->createLog('User role updated', date('Y-m-d H:i:s'));
     }
 
-    public function deleteUser(): void
+    public function deleteUser($userID): void
     {
-        $this->userModel->deleteUser();
+        $this->userModel->deleteUser($userID);
         $this->logger->createLog('User deleted', date('Y-m-d H:i:s'));
     }
 

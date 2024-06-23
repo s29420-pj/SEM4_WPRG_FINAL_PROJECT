@@ -10,6 +10,13 @@ $postController = new PostController();
 $posts = $postController->getPosts();
 $loggedIn = $user->isLoggedIn();
 $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
+
+if (isset($_GET['sort']) && $_GET['sort'] === 'date') {
+    $posts = $postController->sortPostsByDate();
+} else {
+    $posts = $postController->getPosts();
+}
+
 ?>
 
 <!DOCTYPE html>
@@ -19,6 +26,7 @@ $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Szlakiem Przygód</title>
     <link rel="stylesheet" href="./css/bootstrap.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.3.0/font/bootstrap-icons.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
     <link href="https://fonts.googleapis.com/css2?family=Playwrite+NG+Modern:wght@100..400&family=Poppins:ital,wght@0,100;0,200;0,300;0,400;0,500;0,600;0,700;0,800;0,900;1,100;1,200;1,300;1,400;1,500;1,600;1,700;1,800;1,900&display=swap" rel="stylesheet">
@@ -36,28 +44,34 @@ $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
 <header class="bg-light py-3">
     <div class="container">
         <div class="d-flex justify-content-between align-items-center">
-            <div class="logo">
+            <div class="d-flex justify-content-start align-items-center logo">
                 <a href="index.php">
                     <img src="./img/logo.png" alt="Logo" class="img-fluid" style="height: 120px; width: auto">
                 </a>
+                <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
             </div>
-            <h1 class="text-center flex-grow-1 mb-0 logo">Szlakiem Przygód</h1>
             <nav>
                 <ul class="nav">
                     <?php if ($loggedIn): ?>
-                        <li class="nav-item me-3"><a href="actions/logout.php" class="btn btn-danger">LogOut</a></li>
                         <?php if ($userRole === 'ADMIN' || $userRole === 'AUTHOR'): ?>
-                            <li class="nav-item me-3"><a href="createPost.php" class="btn btn-primary">Create Post</a></li>
+                            <li class="nav-item me-2"><a href="createPost.php" class="btn btn-success">Utwórz Post</a></li>
+                            <li class="nav-item me-2"><a href="mail.php" class="btn btn-info">Mail</a></li>
                         <?php endif; ?>
                         <?php if ($userRole === 'ADMIN'): ?>
-                            <li class="nav-item me-3"><a href="admin.php" class="btn btn-dark">Admin Panel</a></li>
+                            <li class="nav-item me-2"><a href="admin.php" class="btn btn-dark">Panel Administratora</a></li>
                         <?php endif; ?>
                     <?php else: ?>
-                        <li class="nav-item me-3"><a href="login.php" class="btn btn-light">Login</a></li>
-                        <li class="nav-item me-3"><a href="register.php" class="btn btn-dark">Register</a></li>
+                        <li class="nav-item me-2"><a href="login.php" class="btn btn-light">Zaloguj</a></li>
+                        <li class="nav-item me-2"><a href="register.php" class="btn btn-dark">Zarejestruj</a></li>
                     <?php endif; ?>
-                    <li class="nav-item"><a href="contact.php" class="btn btn-light">Contact</a></li>
+                    <?php if ($loggedIn && $userRole === 'USER'): ?>
+                        <li class="nav-item me-1"><a href="contact.php" class="btn btn-light">Kontakt</a></li>
+                    <?php endif; ?>
                     <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
+                    <?php if ($loggedIn): ?>
+                        <li class="nav-item me-1"><a href="profile.php" class="btn btn-light">Profil</a></li>
+                        <li class="nav-item me-1"><a href="actions/logout.php" class="btn btn-danger">Wyloguj</a></li>
+                    <?php endif; ?>
                 </ul>
             </nav>
         </div>
@@ -65,6 +79,11 @@ $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
 </header>
 <div class="container">
     <hr class="my-4">
+    <div class="d-flex justify-content-end">
+        <p class="me-3">Sortuj po dacie:</p>
+        <a href="index.php?sort=date" class="me-2"><img src="img/arrow_up.png"></a>
+        <a href="index.php"><img src="img/arrow_down.png"></a>
+    </div>
     <main class="py-4">
         <div class="row">
             <?php foreach ($posts as $post): ?>
@@ -82,7 +101,13 @@ $userRole = $loggedIn ? $user->getUserRole($user->getUserID()) : null;
                                 }
                                 ?>
                                 <p class="card-text"><?= $post['content'] ?></p>
-                                <p class="card-text"><small class="text-muted">Author: <?= $postController->getPostAuthor($post['id']) ?></small></p>
+                                <p class="card-text"><small class="text-muted">Autor: <?= $postController->getPostAuthor($post['id']) ?></small></p>
+                                <p class="card-text"><small class="text-muted">Data: <?= $postController->getPostDate($post['id']) ?></small></p>
+                                <?php
+                                if ($loggedIn && ($userRole === 'ADMIN' || $user->getUserID() === $post['wprg_users_id'])): ?>
+                                    <a href="editPost.php?id=<?= $post['id'] ?>" class="btn btn-warning">Edytuj</a>
+                                    <a href="actions/deletePost.php?id=<?= $post['id'] ?>" class="btn btn-danger">Usuń</a>
+                                <?php endif; ?>
                             </div>
                         </div>
                     </a>
