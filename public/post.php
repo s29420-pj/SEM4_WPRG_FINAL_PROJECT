@@ -68,7 +68,7 @@ if (!$post) {
                         <li class="nav-item me-2"><a href="login.php" class="btn btn-light">Zaloguj</a></li>
                         <li class="nav-item me-2"><a href="register.php" class="btn btn-dark">Zarejestruj</a></li>
                     <?php endif; ?>
-                    <?php if ($loggedIn && $userRole !== 'AUTHOR'): ?>
+                    <?php if ($userRole !== 'AUTHOR' && $userRole !== 'ADMIN'): ?>
                         <li class="nav-item me-1"><a href="contact.php" class="btn btn-light">Kontakt</a></li>
                     <?php endif; ?>
                     <li class="nav-item"><a href="index.php" class="btn btn-light">Home</a></li>
