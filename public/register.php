@@ -5,11 +5,14 @@ use App\Controllers\UserController;
 
 session_start();
 
+$userController = new UserController();
+$loggedIn = $userController->isLoggedIn();
+$userRole = $loggedIn ? $userController->getUserRole($userController->getUserID()) : null;
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $username = $_POST['username'];
     $password = $_POST['password'];
 
-    $userController = new UserController();
     try {
         $userController->createUser($username, $password);
         echo "Użytkownik został zarejestrowany";
