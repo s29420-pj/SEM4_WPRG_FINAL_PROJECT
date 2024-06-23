@@ -3,7 +3,6 @@
 namespace App\Models;
 
 use Exception;
-use App\Models\Database;
 
 class Post
 {
@@ -38,6 +37,18 @@ class Post
         $stmt->close();
     }
 
+    public function getPostByID($postID): bool|array|null
+    {
+        $db = new Database();
+        $connection = $db->getConnection();
+        $stmt = $connection->prepare("SELECT * FROM wprg_posts WHERE id = ?");
+        $stmt->bind_param("i", $postID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result->fetch_assoc();
+    }
+
     public function deletePost($postID): void
     {
         $user = new User();
@@ -52,18 +63,6 @@ class Post
         $stmt->bind_param("i", $postID);
         $stmt->execute();
         $stmt->close();
-    }
-
-    public function getPostByID($postID): bool|array|null
-    {
-        $db = new Database();
-        $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT * FROM wprg_posts WHERE id = ?");
-        $stmt->bind_param("i", $postID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-        return $result->fetch_assoc();
     }
 
     public function getPosts(): array

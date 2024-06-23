@@ -27,7 +27,8 @@ class UserController
         return $this->userModel->getUser($userID);
     }
 
-    public function getUserID() {
+    public function getUserID()
+    {
         return $this->userModel->getUserID();
     }
 

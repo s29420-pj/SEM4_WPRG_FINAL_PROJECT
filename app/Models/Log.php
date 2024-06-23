@@ -7,7 +7,7 @@ class Log
     public function createLog($message, $timestamp): void
     {
         $user = new User();
-        if($user->isLoggedIn()) {
+        if ($user->isLoggedIn()) {
             $userID = $user->getUserID();
         } else {
             $userID = null;

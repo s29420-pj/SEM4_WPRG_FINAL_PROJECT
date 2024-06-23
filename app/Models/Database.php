@@ -4,8 +4,8 @@ namespace App\Models;
 
 require __DIR__ . '/../../vendor/autoload.php';
 
-use Symfony\Component\Dotenv\Dotenv;
 use mysqli;
+use Symfony\Component\Dotenv\Dotenv;
 
 class Database
 {

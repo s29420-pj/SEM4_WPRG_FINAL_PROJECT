@@ -43,26 +43,6 @@ class User
         return $result->fetch_assoc();
     }
 
-    public function getUserID()
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        return $_SESSION['id'] ?? null;
-    }
-
-    public function getUserRole($userID)
-    {
-        $db = new Database();
-        $connection = $db->getConnection();
-        $stmt = $connection->prepare("SELECT role FROM wprg_users WHERE id = ?");
-        $stmt->bind_param("i", $userID);
-        $stmt->execute();
-        $result = $stmt->get_result();
-        $stmt->close();
-        return $result->fetch_assoc()['role'];
-    }
-
     public function updateUserRole($userID, $role): void
     {
         $user = new User();
@@ -78,6 +58,34 @@ class User
         $stmt->bind_param("si", $role, $userID);
         $stmt->execute();
         $stmt->close();
+    }
+
+    public function getUserID()
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        return $_SESSION['id'] ?? null;
+    }
+
+    public function isLoggedIn(): bool
+    {
+        if (session_status() == PHP_SESSION_NONE) {
+            session_start();
+        }
+        return isset($_SESSION['id']);
+    }
+
+    public function getUserRole($userID)
+    {
+        $db = new Database();
+        $connection = $db->getConnection();
+        $stmt = $connection->prepare("SELECT role FROM wprg_users WHERE id = ?");
+        $stmt->bind_param("i", $userID);
+        $stmt->execute();
+        $result = $stmt->get_result();
+        $stmt->close();
+        return $result->fetch_assoc()['role'];
     }
 
     public function deleteUser($userID)
@@ -141,14 +149,6 @@ class User
         } else {
             return false;
         }
-    }
-
-    public function isLoggedIn(): bool
-    {
-        if (session_status() == PHP_SESSION_NONE) {
-            session_start();
-        }
-        return isset($_SESSION['id']);
     }
 
     public function logout(): void
