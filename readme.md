@@ -1,4 +1,3 @@
-```markdown
 # On the Trail of Adventure
 
 ## Project Description
@@ -18,7 +17,7 @@ To run the project locally, follow these steps:
 
 1. Clone the project repository:
 ```bash
-git clone [REPOSITORY_URL]
+git clone https://github.com/s29420-pj/SEM4_WPRG_FINAL_PROJECT.git
 ```
 
 2. Install dependencies using Composer:
@@ -58,6 +57,6 @@ Visit `http://localhost:8000` in your browser to see the application running.
 ## Author
 
 Index: s29420
-```
-
+```bash
 Replace `[REPOSITORY_URL]`, `[PROJECT_DIRECTORY_NAME]`, `[DATABASE_HOST_ADDRESS]`, `[DATABASE_USERNAME]`, `[DATABASE_PASSWORD]`, and `[DATABASE_NAME]` with the appropriate values for your project.
+```
